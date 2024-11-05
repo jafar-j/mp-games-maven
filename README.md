@@ -4,8 +4,8 @@ A mini-project for Grinnell's CSC-207.
 
 Authors:
 
-* Your Name Here
-* Your Name Here
+* Jafar Jarrar
+* Leo Alves Nunes
 * Samuel A. Rebelsky (Starter code)
 
 Instructions:
