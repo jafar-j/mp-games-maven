@@ -1,9 +1,11 @@
 package edu.grinnell.csc207.ourGame;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import edu.grinnell.csc207.util.ArrayUtils;
 import edu.grinnell.csc207.util.IOUtils;
+import java.util.Random;
 import edu.grinnell.csc207.util.Matrix;
 import edu.grinnell.csc207.util.MatrixV0;
 import java.io.PrintWriter;
@@ -34,6 +36,8 @@ public class ticTacToes {
    * The value is initialized based on user input in beginning of execution.
    */
   private static boolean playerTurn;
+
+  private static boolean gameMode;
 
   /**
    * Value showing how many rounds of the game have been played.
@@ -152,6 +156,7 @@ public class ticTacToes {
     } // if
   } // playGame()
 
+
   /**
    * Prints out the game guide for the user(s) and runs the game until a winner is
    * determined or the board is filled (it is a tie).
@@ -159,56 +164,145 @@ public class ticTacToes {
    * Command-line arguments (ignored).
    */
   public static void main(String[] args) {
+    ArrayList<Integer> availableNumbers = new ArrayList<>();
+    for (int i = 0; i < 9; i++) {
+      availableNumbers.add(i);
+    }
     PrintWriter pen = new PrintWriter(System.out, true);
     Scanner eyes = new Scanner(System.in);
     char winner;
     values = new MatrixV0<>(3, 3, ' ');
     turnsPlayed = 0;
+
     setDefaultValues();
 
     pen.println("Let's play X-O!");
     // Adding interactiveness cause why not.
+
     while (true) {
-      pen.println("Who will start the game? X or O? Please use lowercase letters when entering X or O.");
+      pen.println("If you want to play with a friend, type 0. If you want to play against the computer, type 1:");
       String starter = eyes.nextLine();
-      if (starter.charAt(0) == 'x') {
-        playerTurn = false;
+      if (starter.charAt(0) == '0') {
+        gameMode = false;
         break;
-      } else if (starter.charAt(0) == 'o') {
-        playerTurn = true;
+      } else if (starter.charAt(0) == '1') {
+        gameMode = true;
         break;
       } else {
         System.err.println("Error: Invalid input. Please try again.");
       } // if
     } // while
 
-    pen.println("Please enter the position you want based on the matrix below:");
-    Matrix.print(pen, defaultValues, false);
-    while (turnsPlayed != 9) {
-      String input = eyes.nextLine();
-      int position = input.charAt(0) - 48;
-      if (position < 0 || position > 9) {
-        System.err.println("Error: Invalid input. Please enter a valid position.");
-        continue;
-      } // if
-      try {
-        playRound(position);
-      } catch (Exception e) {
-        System.err.println("Position already taken! Choose another position.");
-        continue;
-      } // try/catch
-      turnsPlayed++;
-      Matrix.print(pen, values, false);
-      winner = winnerCalculator();
-      if (winner == 'X') {
-        pen.println("X has won the game!");
-        return;
-      } else if (winner == 'O') {
-        pen.println("O has won the game!");
-        return;
-      } // if
-    } // while
+
+    
+
+    if (gameMode == false){
+      while (true) {
+        pen.println("Who will start the game? X or O? Please use lowercase letters when entering X or O.");
+        String starter = eyes.nextLine();
+        if (starter.charAt(0) == 'x') {
+          playerTurn = false;
+          break;
+        } else if (starter.charAt(0) == 'o') {
+          playerTurn = true;
+          break;
+        } else {
+          System.err.println("Error: Invalid input. Please try again.");
+        } // if
+      } // while
+      
+      pen.println("Please enter the position you want based on the matrix below:");
+      Matrix.print(pen, defaultValues, false);
+      while (turnsPlayed != 9) {
+        String input = eyes.nextLine();
+        int position = input.charAt(0) - 48;
+        if (position < 0 || position > 9) {
+          System.err.println("Error: Invalid input. Please enter a valid position.");
+          continue;
+        } // if
+        try {
+          playRound(position);
+        } catch (Exception e) {
+          System.err.println("Position already taken! Choose another position.");
+          continue;
+        } // try/catch
+        availableNumbers.remove(position);
+        turnsPlayed++;
+        Matrix.print(pen, values, false);
+        winner = winnerCalculator();
+        if (winner == 'X') {
+          pen.println("X has won the game!");
+          return;
+        } else if (winner == 'O') {
+          pen.println("O has won the game!");
+          return;
+        } // if
+      } // while
     pen.println("It is a tie! Thank you for playing.");
+    } else {
+      Random rand = new Random();
+      pen.println("PLAY AGAINST THE COMPUTER! BE PREPARED!!!");
+      while (true) {
+        pen.println("Who will start the game? Type 0 if you want to start. Type 1 if you want the computer to start.");
+        String starter = eyes.nextLine();
+        if (starter.charAt(0) == '0') {
+          playerTurn = false;
+          break;
+        } else if (starter.charAt(0) == '1') {
+          playerTurn = true;
+          break;
+        } else {
+          System.err.println("Error: Invalid input. Please try again.");
+        } // if
+      } // while
+
+
+
+      pen.println("Please enter the position you want based on the matrix below:");
+      Matrix.print(pen, defaultValues, false);
+      while (turnsPlayed != 9) {
+        
+        if (!playerTurn){
+          String input = eyes.nextLine();
+          int position = input.charAt(0) - 48;
+          if (position < 0 || position > 9) {
+            System.err.println("Error: Invalid input. Please enter a valid position.");
+            continue;
+          } // if
+          try {
+            playRound(position);
+          } catch (Exception e) {
+            System.err.println("Position already taken! Choose another position.");
+            continue;
+          } // try/catch
+        } else {
+          int randomPos = rand.nextInt(availableNumbers.size()-1);
+          try{
+            playRound(availableNumbers.get(randomPos));
+          } catch (Exception e) {
+            continue;
+          }
+        }
+        
+        turnsPlayed++;
+        Matrix.print(pen, values, false);
+        winner = winnerCalculator();
+        if (winner == 'X') {
+          pen.println("X has won the game!");
+          return;
+        } else if (winner == 'O') {
+          pen.println("O has won the game!");
+          return;
+        } // if
+      } // while
+
+
+
+
+
+
+    }
+    
   } // main(String[])
 
 } // class ticTacToes
