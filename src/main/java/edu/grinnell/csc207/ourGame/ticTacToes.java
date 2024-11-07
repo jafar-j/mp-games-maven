@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import edu.grinnell.csc207.util.ArrayUtils;
 import edu.grinnell.csc207.util.IOUtils;
+import edu.grinnell.csc207.util.boardUtils;
+import edu.grinnell.csc207.util.ticTacUtils;
 import java.util.Random;
 import edu.grinnell.csc207.util.Matrix;
 import edu.grinnell.csc207.util.MatrixV0;
@@ -19,17 +21,6 @@ import java.util.Scanner;
  * @author Leonardo Alves Nunes
  */
 public class ticTacToes {
-
-  /**
-   * 3x3 Matrix carrying the positions to choose from to guide players of the game.
-   */
-  private static MatrixV0<Integer> defaultValues;
-
-  /**
-   * The "game board" to play on. It is a 3x3 matrix that is filled with characters depending on
-   * input as the game is played.
-   */
-  private static MatrixV0<Character> values;
 
   /**
    * Carries value indicating whether it is player X's turn or player O's turn. The value is
@@ -47,45 +38,8 @@ public class ticTacToes {
    */
   private static int turnsPlayed;
 
-  /**
-   * Initialized and fills the default matrix with the position integers using the matrix
-   * operations.
-   */
-  public static void setDefaultValues() {
-    defaultValues = new MatrixV0<Integer>(3, 0);
-    try {
-      defaultValues.insertRow(0, new Integer[] {0, 1, 2});
-      defaultValues.insertRow(1, new Integer[] {3, 4, 5});
-      defaultValues.insertRow(2, new Integer[] {6, 7, 8});
-    } catch (Exception e) {
-      // Does nothing.
-    } // try/catch
-  } // setDefaultValues()
+  private static ArrayList<Integer> valuesAvailable;
 
-  /**
-   * Sets value at position given by user to 'X' or 'O' based on the turn.
-   * 
-   * @param position Value inputted by user that is converted to separate horizontal and vertical
-   *        matrix coordinates.
-   * @param letter X or O depending on the turn.
-   */
-  public static void setValue(int position, char letter) {
-    int rowPosition = position / 3;
-    int colPosition = position % 3;
-    values.set(rowPosition, colPosition, letter);
-  } // setValue(int)
-
-  /**
-   * Gets the character value at the position to help with determining the winner.
-   * 
-   * @param position int that the character is to be retrieved from.
-   * @return The character at the given position.
-   */
-  public static char getValue(int position) {
-    int rowPosition = position / 3;
-    int colPosition = position % 3;
-    return values.get(rowPosition, colPosition);
-  } // getValue(int, int)
 
   /**
    * Checks if the starting character chosen is either X or O.
@@ -116,9 +70,9 @@ public class ticTacToes {
       // retrieves the values at the given positions, and checks if they all
       // contain the same character to determine the winner.
       int[] winCase = possibilities[i];
-      char pos1 = getValue(winCase[0]);
-      char pos2 = getValue(winCase[1]);
-      char pos3 = getValue(winCase[2]);
+      char pos1 = boardUtils.getValue(winCase[0]);
+      char pos2 = boardUtils.getValue(winCase[1]);
+      char pos3 = boardUtils.getValue(winCase[2]);
       if (pos1 == pos2 && pos2 == pos3) {
         return pos1;
       } // if
@@ -128,24 +82,22 @@ public class ticTacToes {
 
   /**
    * Sets characters in the values matrix based on the turn and position that the user selects.
-   * 
    * @param position The position that the user wants to fill with 'X' or 'O'.
    * @throws Exception If the user tries to choose a position on the board that has already been
    *         taken.
    */
-  public static void playRound(int position) throws Exception {
-    if (getValue(position) != ' ') {
+  public static boolean playRound (int position) throws Exception {
+    if (boardUtils.getValue(position) != ' ') {
       throw new Exception(); // if there is already a value in the position
     } // if
     if (playerTurn) {
-      setValue(position, 'O');
-      playerTurn = false;
+      boardUtils.setValue(position, 'O');
+      return false;
     } else {
-      setValue(position, 'X');
-      playerTurn = true;
+      boardUtils.setValue(position, 'X');
+      return true;
     } // if
-  } // playGame()
-
+  } // playRound(int)
 
   /**
    * Prints out the game guide for the user(s) and runs the game until a winner is determined or the
@@ -154,21 +106,16 @@ public class ticTacToes {
    * @param args Command-line arguments (ignored).
    */
   public static void main(String[] args) {
-    ArrayList<Integer> availableNumbers = new ArrayList<>();
-    for (int i = 0; i < 9; i++) {
-      availableNumbers.add(i);
-    }
     PrintWriter pen = new PrintWriter(System.out, true);
     Scanner eyes = new Scanner(System.in);
     char winner;
-    values = new MatrixV0<>(3, 3, ' ');
+    boardUtils.values = new MatrixV0<>(3, 3, ' ');
     turnsPlayed = 0;
-
-    setDefaultValues();
+    boardUtils.setDefaultValues();
 
     pen.println("Let's play X-O!");
-    // Adding interactiveness cause why not.
 
+    // Asks user to select game mode.
     while (true) {
       pen.println(
           "If you want to play with a friend, type 0. If you want to play against the computer, type 1:");
@@ -184,7 +131,8 @@ public class ticTacToes {
       } // if
     } // while
 
-    if (gameMode == false) {
+    // Normal two-player game mode code execution.
+    if (!gameMode) {
       while (true) {
         pen.println(
             "Who will start the game? X or O? Please use lowercase letters when entering X or O.");
@@ -201,23 +149,22 @@ public class ticTacToes {
       } // while
 
       pen.println("Please enter the position you want based on the matrix below:");
-      Matrix.print(pen, defaultValues, false);
+      Matrix.print(pen, boardUtils.defaultValues, false);
       while (turnsPlayed != 9) {
         String input = eyes.nextLine();
         int position = input.charAt(0) - 48;
-        if (position < 0 || position > 9) {
+        if (position < 0 || position > 8) {
           System.err.println("Error: Invalid input. Please enter a valid position.");
           continue;
         } // if
         try {
-          playRound(position);
+          playerTurn = playRound(position);
         } catch (Exception e) {
           System.err.println("Position already taken! Choose another position.");
           continue;
         } // try/catch
-        availableNumbers.remove(position);
         turnsPlayed++;
-        Matrix.print(pen, values, false);
+        Matrix.print(pen, boardUtils.values, false);
         winner = winnerCalculator();
         if (winner == 'X') {
           pen.println("X has won the game!");
@@ -228,8 +175,14 @@ public class ticTacToes {
         } // if
       } // while
       pen.println("It is a tie! Thank you for playing.");
+
     } else {
+      // Code execution for computer vs user game mode.
       Random rand = new Random();
+      ArrayList<Integer> availableNumbers = new ArrayList<>();
+      for (int i = 0; i < 9; i++) {
+        availableNumbers.add(i);
+      } // for
       pen.println("PLAY AGAINST THE COMPUTER! BE PREPARED!!!");
       while (true) {
         pen.println(
@@ -247,33 +200,38 @@ public class ticTacToes {
       } // while
       
       pen.println("Please enter the position you want based on the matrix below:");
-      Matrix.print(pen, defaultValues, false);
+      Matrix.print(pen, boardUtils.defaultValues, false);
       while (turnsPlayed != 9) {
-
+        // Execution if it is the user's turn.
         if (!playerTurn) {
           String input = eyes.nextLine();
           int position = input.charAt(0) - 48;
-          if (position < 0 || position > 9) {
+          if (position < 0 || position > 8) {
             System.err.println("Error: Invalid input. Please enter a valid position.");
             continue;
           } // if
           try {
-            playRound(position);
+            playerTurn = playRound(position);
+            availableNumbers.remove(availableNumbers.indexOf(position));
           } catch (Exception e) {
             System.err.println("Position already taken! Choose another position.");
             continue;
           } // try/catch
         } else {
-          int randomPos = rand.nextInt(availableNumbers.size() - 1);
+          // Execution if it is the computer's turn.
+          int randomIndex = rand.nextInt(availableNumbers.size());
+          int randomPos = availableNumbers.get(randomIndex);
+
           try {
-            playRound(availableNumbers.get(randomPos));
+            playerTurn = playRound(randomPos);
+            availableNumbers.remove(availableNumbers.indexOf(randomPos));
           } catch (Exception e) {
             continue;
           } // try
         } // else
 
         turnsPlayed++;
-        Matrix.print(pen, values, false);
+        Matrix.print(pen, boardUtils.values, false);
         winner = winnerCalculator();
         if (winner == 'X') {
           pen.println("X has won the game!");
@@ -283,6 +241,7 @@ public class ticTacToes {
           return;
         } // if
       } // while
+      pen.println("It is a tie! Thank you for playing.");
     } // else
   } // main(String[])
 } // class ticTacToes
