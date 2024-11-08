@@ -17,7 +17,7 @@ public class GameUtils {
 
   /**
    * Checks if the starting character chosen is either X or O.
-   * 
+   *
    * @param letter
    *               The character inputted by the user to be checked.
    * @return
@@ -34,15 +34,16 @@ public class GameUtils {
    * Calculates if the winner is X or O by checking if any of the possible winning
    * combinations are
    * met in the matrix of values.
-   * 
+   *
    * @return
    *         'X' if X is the winner, 'O' if O is the winner, 'n' if it is a tie.
    */
   public static char winnerCalculator() {
     // Array containing sequences of positions in values matrix that must contain
     // all X's or all O's for a winner to be declared.
-    int[][] possibilities = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, { 0, 4, 8 }, { 2, 4, 6 }, { 0, 3, 6 }, { 1, 4, 7 },
-        { 2, 5, 8 } };
+    int[][] possibilities = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 4, 8}, {2, 4, 6}, {0, 3, 6},
+        {1, 4, 7},
+        {2, 5, 8}};
     for (int i = 0; i < possibilities.length; i++) {
       // Sets temporary array equal to one of the possible sequences,
       // retrieves the values at the given positions, and checks if they all
@@ -61,13 +62,14 @@ public class GameUtils {
   /**
    * Sets characters in the values matrix based on the turn and position that the
    * user selects.
-   * 
+   *
    * @param position
    *                 The position that the user wants to fill with 'X' or 'O'.
    * @throws Exception
    *                   If the user tries to choose a position on the board that
    *                   has already been
    *                   taken.
+   * @return boolean.
    */
   public static boolean playRound(int position) throws Exception {
     if (BoardUtils.getValue(position) != ' ') {
@@ -81,4 +83,4 @@ public class GameUtils {
       return true;
     } // if
   } // playRound(int)
-}
+} // class GameUtils

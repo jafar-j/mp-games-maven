@@ -28,9 +28,9 @@ public class BoardUtils {
   public static void setDefaultValues() {
     defaultValues = new MatrixV0<Integer>(3, 0);
     try {
-      defaultValues.insertRow(0, new Integer[] { 0, 1, 2 });
-      defaultValues.insertRow(1, new Integer[] { 3, 4, 5 });
-      defaultValues.insertRow(2, new Integer[] { 6, 7, 8 });
+      defaultValues.insertRow(0, new Integer[] {0, 1, 2});
+      defaultValues.insertRow(1, new Integer[] {3, 4, 5});
+      defaultValues.insertRow(2, new Integer[] {6, 7, 8});
     } catch (Exception e) {
       // Does nothing.
     } // try/catch
@@ -38,7 +38,7 @@ public class BoardUtils {
 
   /**
    * Sets value at position given by user to 'X' or 'O' based on the turn.
-   * 
+   *
    * @param position Value inputted by user that is converted to separate
    *                 horizontal and vertical
    *                 matrix coordinates.
@@ -52,7 +52,7 @@ public class BoardUtils {
 
   /**
    * Gets the character value at the position to help with determining the winner.
-   * 
+   *
    * @param position int that the character is to be retrieved from.
    * @return The character at the given position.
    */
@@ -61,4 +61,4 @@ public class BoardUtils {
     int colPosition = position % 3;
     return values.get(rowPosition, colPosition);
   } // getValue(int, int)
-}
+} // classBoardUtils
