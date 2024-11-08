@@ -59,7 +59,7 @@ public class TicTacToes {
     PrintWriter pen = new PrintWriter(System.out, true);
     Scanner eyes = new Scanner(System.in);
     char winner;
-    BoardUtils.values = new MatrixV0<>(3, 3, ' ');
+    BoardUtils.setValues(new MatrixV0<>(3, 3, ' '));
     turnsPlayed = 0;
     BoardUtils.setDefaultValues();
 
@@ -88,10 +88,10 @@ public class TicTacToes {
             "Who will start the game? X or O? Please use lowercase letters when entering X or O.");
         String starter = eyes.nextLine();
         if (starter.charAt(0) == 'x') {
-          GameUtils.playerTurn = false;
+          GameUtils.setPlayerTurn(false);
           break;
         } else if (starter.charAt(0) == 'o') {
-          GameUtils.playerTurn = true;
+          GameUtils.setPlayerTurn(true);
           break;
         } else {
           System.err.println("Error: Invalid input. Please try again.");
@@ -99,7 +99,7 @@ public class TicTacToes {
       } // while
 
       pen.println("Please enter the position you want based on the matrix below:");
-      Matrix.print(pen, BoardUtils.defaultValues, false);
+      Matrix.print(pen, BoardUtils.getDefaultValues(), false);
       while (turnsPlayed != 9) {
         String input = eyes.nextLine();
         int position = input.charAt(0) - 48;
@@ -108,13 +108,13 @@ public class TicTacToes {
           continue;
         } // if
         try {
-          GameUtils.playerTurn = GameUtils.playRound(position);
+          GameUtils.setPlayerTurn(GameUtils.playRound(position));
         } catch (Exception e) {
           System.err.println("Position already taken! Choose another position.");
           continue;
         } // try/catch
         turnsPlayed++;
-        Matrix.print(pen, BoardUtils.values, false);
+        Matrix.print(pen, BoardUtils.getValues(), false);
         winner = GameUtils.winnerCalculator();
         if (winner == 'X') {
           pen.println("X has won the game!");
@@ -140,10 +140,10 @@ public class TicTacToes {
             "Who will start the game? Type 0 if you want to start. Type 1 so computer starts.");
         String starter = eyes.nextLine();
         if (starter.charAt(0) == '0') {
-          GameUtils.playerTurn = false;
+          GameUtils.setPlayerTurn(false);
           break;
         } else if (starter.charAt(0) == '1') {
-          GameUtils.playerTurn = true;
+          GameUtils.setPlayerTurn(true);
           break;
         } else {
           System.err.println("Error: Invalid input. Please try again.");
@@ -151,10 +151,10 @@ public class TicTacToes {
       } // while
 
       pen.println("Please enter the position you want based on the matrix below:");
-      Matrix.print(pen, BoardUtils.defaultValues, false);
+      Matrix.print(pen, BoardUtils.getDefaultValues(), false);
       while (turnsPlayed != 9) {
         // Execution if it is the user's turn.
-        if (!GameUtils.playerTurn) {
+        if (!GameUtils.getPlayerTurn()) {
           String input = eyes.nextLine();
           int position = input.charAt(0) - 48;
           if (position < 0 || position > 8) {
@@ -162,7 +162,7 @@ public class TicTacToes {
             continue;
           } // if
           try {
-            GameUtils.playerTurn = GameUtils.playRound(position);
+            GameUtils.setPlayerTurn(GameUtils.playRound(position));
           } catch (Exception e) {
             System.err.println("Position already taken! Choose another position.");
             continue;
@@ -175,7 +175,7 @@ public class TicTacToes {
             try {
               randomIndex = rand.nextInt(positionsLeft);
               randomPos = availablePositions[randomIndex];
-              GameUtils.playerTurn = GameUtils.playRound(randomPos);
+              GameUtils.setPlayerTurn(GameUtils.playRound(randomPos));
               shiftElement(availablePositions, positionsLeft--, randomIndex);
               break;
             } catch (Exception e) {
@@ -185,7 +185,7 @@ public class TicTacToes {
         } // else
 
         turnsPlayed++;
-        Matrix.print(pen, BoardUtils.values, false);
+        Matrix.print(pen, BoardUtils.getValues(), false);
         winner = GameUtils.winnerCalculator();
         if (winner == 'X') {
           pen.println("X has won the game!");
