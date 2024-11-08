@@ -1,6 +1,12 @@
 package edu.grinnell.csc207.util;
 
-public class boardUtils {
+/**
+ * Contains helper methods used to access Matrix methods to add and remove
+ * characters at specific indexes.
+ * @author Jafar Jarrar
+ * @author Leonardo Alves Nunes
+ */
+public class BoardUtils {
 
     /**
    * The "game board" to play on. It is a 3x3 matrix that is filled with characters depending on
