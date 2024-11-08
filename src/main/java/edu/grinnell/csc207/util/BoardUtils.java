@@ -12,14 +12,38 @@ public class BoardUtils {
    * The "game board" to play on. It is a 3x3 matrix that is filled with characters depending on
    * input as the game is played.
    */
-  public static MatrixV0<Character> values;
+  private static MatrixV0<Character> values;
 
   /**
    * 3x3 Matrix carrying the positions to choose from to guide players of the
    * game.
    */
-  public static MatrixV0<Integer> defaultValues;
+  private static MatrixV0<Integer> defaultValues;
 
+  /**
+   * Returns the matrix containing the x and o values.
+   * @return the values matrix.
+   */
+  public static MatrixV0<Character> getValues() {
+    return values;
+  } // getValues()
+
+  /**
+   * Initializes the matrix containing the x and o values.
+   * @param vals
+   * Matrix containing the x and o vals to be set.
+   */
+  public static void setValues(MatrixV0<Character> vals) {
+    values = vals;
+  } // setValues(MatrixV0<Character>)
+
+  /**
+   * Returns the default matrix containing the position selections for the game.
+   * @return the default positions matrix.
+   */
+  public static MatrixV0<Integer> getDefaultValues() {
+    return defaultValues;
+  } // getDefaultValues()
   /**
    * Initialized and fills the default matrix with the position integers using the
    * matrix

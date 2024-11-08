@@ -13,8 +13,24 @@ public class GameUtils {
    * The value is
    * initialized based on user input in beginning of execution.
    */
-  public static boolean playerTurn;
+  private static boolean playerTurn;
 
+  /**
+   * Indicates what turn is it to play (x or o).
+   * @return the player turn.
+   */
+  public static boolean getPlayerTurn() {
+    return playerTurn;
+  } // getPlayerTurn()
+
+  /**
+   * Sets whose turn it is to play.
+   * @param turn
+   * Indicates whose turn it is (false for x, true for o).
+   */
+  public static void setPlayerTurn(boolean turn) {
+    playerTurn = turn;
+  } // setPlayerTurn(boolean)
   /**
    * Checks if the starting character chosen is either X or O.
    *
